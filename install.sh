@@ -19,13 +19,13 @@ az provider register --namespace Microsoft.Network
 az provider register --namespace Microsoft.Storage
 az provider register --namespace Microsoft.Compute
 
-az group create --name $RES_GROUP --location $LOCATION
+az group create --name $RES_GROUP --location "$LOCATION"
 
-az network vnet create --name $VNET --address-prefixes 10.0.0.0/8 --resource-group $RES_GROUP --location $LOCATION --dns-server 8.8.8.8
+az network vnet create --name $VNET --address-prefixes 10.0.0.0/8 --resource-group $RES_GROUP --location "$LOCATION" --dns-server 8.8.8.8
 az network vnet subnet create --name bosh --address-prefix 10.0.0.0/24 --vnet-name $VNET --resource-group $RES_GROUP
 
-az network nsg create --resource-group $RES_GROUP --location $LOCATION --name nsg-bosh
-az network nsg create --resource-group $RES_GROUP --location $LOCATION --name nsg-cf
+az network nsg create --resource-group $RES_GROUP --location "$LOCATION" --name nsg-bosh
+az network nsg create --resource-group $RES_GROUP --location "$LOCATION" --name nsg-cf
 
 az network nsg rule create --resource-group $RES_GROUP --nsg-name nsg-bosh --access Allow --protocol Tcp --direction Inbound --priority 200 --source-address-prefix Internet --source-port-range '*' --destination-address-prefix '*' --name 'ssh' --destination-port-range 22
 az network nsg rule create --resource-group $RES_GROUP --nsg-name nsg-bosh --access Allow --protocol Tcp --direction Inbound --priority 201 --source-address-prefix Internet --source-port-range '*' --destination-address-prefix '*' --name 'bosh-agent' --destination-port-range 6868
@@ -35,9 +35,9 @@ az network nsg rule create --resource-group $RES_GROUP --nsg-name nsg-bosh --acc
 az network nsg rule create --resource-group $RES_GROUP --nsg-name nsg-cf --access Allow --protocol Tcp --direction Inbound --priority 201 --source-address-prefix Internet --source-port-range '*' --destination-address-prefix '*' --name 'cf-https' --destination-port-range 443
 az network nsg rule create --resource-group $RES_GROUP --nsg-name nsg-cf --access Allow --protocol Tcp --direction Inbound --priority 202 --source-address-prefix Internet --source-port-range '*' --destination-address-prefix '*' --name 'cf-log' --destination-port-range 4443
 
-az network public-ip create --name $IP --allocation-method Static --resource-group $RES_GROUP --location $LOCATION --sku Basic 
+az network public-ip create --name $IP --allocation-method Static --resource-group $RES_GROUP --location "$LOCATION" --sku Basic 
 
-az storage account create --name $STORAGE --resource-group $RES_GROUP --location $LOCATION
+az storage account create --name $STORAGE --resource-group $RES_GROUP --location "$LOCATION"
 export STORAGE_KEY=$(az storage account keys list --account-name $STORAGE --resource-group $RES_GROUP --query [0].value -o tsv)
 
 az storage container create --name bosh --account-name $STORAGE --account-key $STORAGE_KEY
