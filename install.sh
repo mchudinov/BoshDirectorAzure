@@ -72,3 +72,5 @@ git clone https://github.com/cloudfoundry/bosh-deployment
 #     -v default_security_group=nsg-bosh
 
 bosh create-env bosh-deployment/bosh.yml --state=state.json --vars-store=creds.yml -o bosh-deployment/azure/cpi.yml -v director_name=bosh-1 -v internal_cidr=10.0.0.0/24 -v internal_gw=10.0.0.1 -v internal_ip=10.0.0.6 -v vnet_name=$VNET -v subnet_name=bosh -v subscription_id=$SUBSCRIPTION_ID -v tenant_id=$TENANT_ID -v client_id=$APPLICATION_ID -v client_secret=$SERVICE_PRINCIPAL_SECRET -v resource_group_name=$RES_GROUP -v storage_account_name=$STORAGE -v default_security_group=nsg-bosh
+
+bosh upload-stemcell https://bosh.io/d/stemcells/bosh-azure-hyperv-ubuntu-xenial-go_agent?v=621.85 --sha1 ce24bcd1a97a875a5d85c5767fad4d2d9acb062f
