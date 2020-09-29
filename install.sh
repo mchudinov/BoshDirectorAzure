@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# Refresh az cli
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
 # Install bosh in Azure
 export SUBSCRIPTION_ID=957e8e87-4448-46ba-bc0f-5406c18fcc5a
 export APPLICATION_ID=2419eb4d-9a22-48bd-bef8-8e8192e099fd
 export TENANT_ID=17f8330f-a4d6-4ef9-b661-8b2aefc4e1ca
-export LOCATION="West Europe"
+export LOCATION="westeurope"
 export RES_GROUP="bosh-res-group"
 export VNET="bosh-net"
 export STORAGE="boshstorechudinov"
@@ -42,30 +45,30 @@ export STORAGE_KEY=$(az storage account keys list --account-name $STORAGE --reso
 
 az storage container create --name bosh --account-name $STORAGE --account-key $STORAGE_KEY
 az storage container create --name stemcell --account-name $STORAGE --account-key $STORAGE_KEY --public-access blob
-az storage container list --account-name $STORAGE --account-key $STORAGE_KEY
 
 az storage table create --name stemcells --account-name $STORAGE --account-key $STORAGE_KEY
-az storage table list --account-name $STORAGE --account-key $STORAGE_KEY
 
 cd ..
 
 mkdir bosh-1 && cd bosh-1
 git clone https://github.com/cloudfoundry/bosh-deployment
 
-bosh create-env bosh-deployment/bosh.yml \
-    --state=state.json \
-    --vars-store=creds.yml \
-    -o bosh-deployment/azure/cpi.yml \
-    -v director_name=bosh-1 \
-    -v internal_cidr=10.0.0.0/24 \
-    -v internal_gw=10.0.0.1 \
-    -v internal_ip=10.0.0.6 \
-    -v vnet_name=$VNET \
-    -v subnet_name=bosh \
-    -v subscription_id=$SUBSCRIPTION_ID \
-    -v tenant_id=$TENANT_ID \
-    -v client_id=$APPLICATION_ID \
-    -v client_secret=$SERVICE_PRINCIPAL_SECRET \ 
-    -v resource_group_name=$RES_GROUP \
-    -v storage_account_name=$STORAGE \
-    -v default_security_group=nsg-bosh \
+# bosh create-env bosh-deployment/bosh.yml \
+#     --state=state.json \
+#     --vars-store=creds.yml \
+#     -o bosh-deployment/azure/cpi.yml \
+#     -v director_name=bosh-1 \
+#     -v internal_cidr=10.0.0.0/24 \
+#     -v internal_gw=10.0.0.1 \
+#     -v internal_ip=10.0.0.6 \
+#     -v vnet_name=$VNET \
+#     -v subnet_name=bosh \
+#     -v subscription_id=$SUBSCRIPTION_ID \
+#     -v tenant_id=$TENANT_ID \
+#     -v client_id=$APPLICATION_ID \
+#     -v client_secret=$SERVICE_PRINCIPAL_SECRET \ 
+#     -v resource_group_name=$RES_GROUP \
+#     -v storage_account_name=$STORAGE \
+#     -v default_security_group=nsg-bosh
+
+bosh create-env bosh-deployment/bosh.yml --state=state.json --vars-store=creds.yml -o bosh-deployment/azure/cpi.yml -v director_name=bosh-1 -v internal_cidr=10.0.0.0/24 -v internal_gw=10.0.0.1 -v internal_ip=10.0.0.6 -v vnet_name=$VNET -v subnet_name=bosh -v subscription_id=$SUBSCRIPTION_ID -v tenant_id=$TENANT_ID -v client_id=$APPLICATION_ID -v client_secret=$SERVICE_PRINCIPAL_SECRET -v resource_group_name=$RES_GROUP -v storage_account_name=$STORAGE -v default_security_group=nsg-bosh
